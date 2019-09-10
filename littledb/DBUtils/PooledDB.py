@@ -141,7 +141,7 @@ Licensed under the MIT license.
 
 from threading import Condition
 
-from DBUtils.SteadyDB import connect
+from littledb.DBUtils.SteadyDB import connect
 
 __version__ = '1.2'
 
@@ -179,11 +179,11 @@ class PooledDB:
     version = __version__
 
     def __init__(self, creator,
-            mincached=0, maxcached=0,
-            maxshared=0, maxconnections=0, blocking=False,
-            maxusage=None, setsession=None, reset=True,
-            failures=None, ping=1,
-            *args, **kwargs):
+                 mincached=0, maxcached=0,
+                 maxshared=0, maxconnections=0, blocking=False,
+                 maxusage=None, setsession=None, reset=True,
+                 failures=None, ping=1,
+                 *args, **kwargs):
         """Set up the DB-API 2 connection pool.
 
         creator: either an arbitrary function returning new DB-API 2
@@ -277,9 +277,9 @@ class PooledDB:
     def steady_connection(self):
         """Get a steady, unpooled DB-API 2 connection."""
         return connect(self._creator,
-            self._maxusage, self._setsession,
-            self._failures, self._ping, True,
-            *self._args, **self._kwargs)
+                       self._maxusage, self._setsession,
+                       self._failures, self._ping, True,
+                       *self._args, **self._kwargs)
 
     def connection(self, shareable=True):
         """Get a steady, cached DB-API 2 connection from the pool.
@@ -292,7 +292,7 @@ class PooledDB:
             self._lock.acquire()
             try:
                 while (not self._shared_cache and self._maxconnections
-                        and self._connections >= self._maxconnections):
+                       and self._connections >= self._maxconnections):
                     self._wait_lock()
                 if len(self._shared_cache) < self._maxshared:
                     # shared cache is not full, get a dedicated connection
@@ -325,7 +325,7 @@ class PooledDB:
             self._lock.acquire()
             try:
                 while (self._maxconnections
-                        and self._connections >= self._maxconnections):
+                       and self._connections >= self._maxconnections):
                     self._wait_lock()
                 # connection limit not reached, get a dedicated connection
                 try:  # first try to get it from the idle cache
@@ -480,7 +480,7 @@ class SharedDBConnection:
 
     def __eq__(self, other):
         return (self.con._transaction == other.con._transaction
-            and self.shared == other.shared)
+                and self.shared == other.shared)
 
     def __ne__(self, other):
         return not self.__eq__(other)

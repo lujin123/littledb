@@ -114,7 +114,7 @@ class InvalidCursor(SteadyDBError):
 
 
 def connect(creator, maxusage=None, setsession=None,
-        failures=None, ping=1, closeable=True, *args, **kwargs):
+            failures=None, ping=1, closeable=True, *args, **kwargs):
     """A tough version of the connection constructor of a DB-API 2 module.
 
     creator: either an arbitrary function returning new DB-API 2 compliant
@@ -139,7 +139,7 @@ def connect(creator, maxusage=None, setsession=None,
 
     """
     return SteadyDBConnection(creator, maxusage, setsession,
-        failures, ping, closeable, *args, **kwargs)
+                              failures, ping, closeable, *args, **kwargs)
 
 
 class SteadyDBConnection:
@@ -148,7 +148,7 @@ class SteadyDBConnection:
     version = __version__
 
     def __init__(self, creator, maxusage=None, setsession=None,
-            failures=None, ping=1, closeable=True, *args, **kwargs):
+                 failures=None, ping=1, closeable=True, *args, **kwargs):
         """Create a "tough" DB-API 2 connection."""
         # basic initialization to make finalizer work
         self._con = None
@@ -252,15 +252,15 @@ class SteadyDBConnection:
             if self._failures is None:
                 try:
                     self._failures = (self._dbapi.OperationalError,
-                        self._dbapi.InternalError)
+                                      self._dbapi.InternalError)
                 except AttributeError:
                     try:
                         self._failures = (self._creator.OperationalError,
-                            self._creator.InternalError)
+                                          self._creator.InternalError)
                     except AttributeError:
                         try:
                             self._failures = (con.OperationalError,
-                                con.InternalError)
+                                              con.InternalError)
                         except AttributeError:
                             raise AttributeError(
                                 "Could not determine failure exceptions"
@@ -361,7 +361,7 @@ class SteadyDBConnection:
         """Return the underlying DB-API 2 module of the connection."""
         if self._dbapi is None:
             raise AttributeError("Could not determine DB-API 2 module"
-                " (please set creator.dbapi).")
+                                 " (please set creator.dbapi).")
         return self._dbapi
 
     def threadsafety(self):
@@ -369,7 +369,7 @@ class SteadyDBConnection:
         if self._threadsafety is None:
             if self._dbapi is None:
                 raise AttributeError("Could not determine threadsafety"
-                    " (please set creator.dbapi or creator.threadsafety).")
+                                     " (please set creator.dbapi or creator.threadsafety).")
             return 0
         return self._threadsafety
 
@@ -563,6 +563,7 @@ class SteadyDBCursor:
 
     def _get_tough_method(self, name):
         """Return a "tough" version of the given cursor method."""
+
         def tough_method(*args, **kwargs):
             execute = name.startswith('execute')
             con = self._con
@@ -662,6 +663,7 @@ class SteadyDBCursor:
             else:
                 con._usage += 1
                 return result
+
         return tough_method
 
     def __getattr__(self, name):
